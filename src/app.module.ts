@@ -4,6 +4,7 @@ import { UsersModule } from './users/users.module';
 import { AdminsModule } from './admins/admins.module';
 import { MessagesModule } from './messages/messages.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RolesModule } from './roles/roles.module';
 import CONNECTION from 'src/db.connection';
 
 
@@ -15,7 +16,7 @@ import CONNECTION from 'src/db.connection';
       synchronize: false,
       autoLoadEntities: true,
     }),
-    ChatsModule, UsersModule, AdminsModule, MessagesModule],
+    ChatsModule, UsersModule, AdminsModule, MessagesModule, RolesModule],
   controllers: [],
   providers: [],
 })

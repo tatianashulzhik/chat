@@ -1,4 +1,7 @@
+import { RoleType } from "src/roles/roles.entity";
+
 export interface IUser {
-  id: string;
+  id: number;
   username: string;
+  role: RoleType;
 }

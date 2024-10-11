@@ -1,5 +1,6 @@
+import { Roles } from '../roles/roles.entity';
 import { Messages } from '../messages/messages.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
 
 
 @Entity()
@@ -21,4 +22,7 @@ export class Users {
 
     @UpdateDateColumn()
     updateAt: Date
+
+    @ManyToOne(() => Roles, { eager: true })
+    role: Roles;
 }

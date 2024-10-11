@@ -6,6 +6,7 @@ import { CresteUserDto } from './dto/create-user.dto';
 import * as argon2 from "argon2";
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
+import { Roles } from '../roles/roles.entity';
 
 @Injectable()
 export class UsersService {
@@ -13,9 +14,13 @@ export class UsersService {
         @InjectRepository(Users)
         private usersRepository: Repository<Users>,
         private readonly jwtService: JwtService,
+        @InjectRepository(Roles)
+        private rolesRepository: Repository<Roles>,
     ) { }
 
     async create(cresteUserDto: CresteUserDto) {
+        const role = await this.rolesRepository.findOne({ where: { name: cresteUserDto.role } });
+
         const existUser = await this.usersRepository.findOne({
             where: {
                 username: cresteUserDto.username,
@@ -26,7 +31,8 @@ export class UsersService {
 
         const user = await this.usersRepository.save({
             username: cresteUserDto.username,
-            password: await argon2.hash(cresteUserDto.password)
+            password: await argon2.hash(cresteUserDto.password),
+            role,
         });
 
         const { password, ...result } = user;
@@ -73,5 +79,12 @@ export class UsersService {
         response.clearCookie('jwt')
 
         return { message: 'success' }
+    }
+
+    async findByIdWithRole(id: number): Promise<Users> {
+        return this.usersRepository.findOne({
+            where: { id },
+            relations: ['role'],
+        });
     }
 }

@@ -2,7 +2,7 @@ import { Controller, Post, Body, Get, UsePipes, ValidationPipe, Res, Req, UseGua
 import { UsersService } from './users.service';
 import { CresteUserDto } from './dto/create-user.dto';
 import { Request, Response } from 'express';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
