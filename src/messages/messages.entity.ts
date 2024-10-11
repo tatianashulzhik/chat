@@ -1,5 +1,4 @@
 import { Chats } from '../chats/chats.entity';
-import { Admins } from '../admins/ admins.entity';
 import { Users } from '../users/users.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
 
@@ -17,9 +16,6 @@ export class Messages {
 
     @ManyToOne(() => Users, (user) => user.messages)
     user: Users;
-
-    @ManyToOne(() => Admins, (admin) => admin.messages)
-    admin: Admins;
 
     @ManyToOne(() => Chats, (chat) => chat.messages)
     chat: Chats;

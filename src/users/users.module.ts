@@ -7,7 +7,6 @@ import { Messages } from '../messages/messages.entity';
 import { Chats } from '../chats/chats.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { Admins } from '../admins/ admins.entity';
 import { JwtStrategy } from '../strategy/jwt.strategy';
 import { ConfigService } from '@nestjs/config';
 import { Roles } from '../roles/roles.entity';
@@ -15,7 +14,7 @@ import { RolesGuard } from '../guards/roles.guard';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Users, Messages, Admins, Chats, Roles]),
+        TypeOrmModule.forFeature([Users, Messages, Chats, Roles]),
         PassportModule.register({ defaultStrategy: 'jwt' }),
         JwtModule.register({
             secret: 'secret',
