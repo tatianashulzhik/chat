@@ -1,7 +1,7 @@
 import { Roles } from '../roles/roles.entity';
 import { Messages } from '../messages/messages.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
-
+import { Chats } from '../chats/chats.entity';
 
 @Entity()
 export class Users {
@@ -13,6 +13,12 @@ export class Users {
 
     @Column()
     password: string;
+
+    @OneToMany(() => Chats, (chat) => chat.creator)
+    createdChats: Chats[]
+
+    @OneToMany(() => Chats, (chat) => chat.secondUser)
+    participatingChats: Chats[]
 
     @OneToMany(() => Messages, (message) => message.user)
     messages: Messages[];
