@@ -15,40 +15,30 @@ export class ChatsService {
         private readonly usersRepository: Repository<Users>,
     ) { }
 
-    async createChat(creatorId: number, createChatDto: CreateChatDto) {
-        const { secondUserId, chatName } = createChatDto;
+    async createGroupChat(creatorId: number, createChatDto: CreateChatDto) {
+        const { participantIds, chatName } = createChatDto;
 
         const creator = await this.usersRepository.findOne({ where: { id: creatorId } });
 
-        if (!secondUserId) {
-            throw new NotFoundException('Необходимо указать ID второго пользователя для создания чата');
+        if (!creator) {
+            throw new NotFoundException('Создатель чата не найден');
         }
 
-        if (creatorId === secondUserId) {
-            throw new BadRequestException('Невозможно создать чат с самим собой');
+        if (!participantIds || participantIds.length === 0) {
+            throw new BadRequestException('Необходимо указать хотя бы одного участника');
         }
 
-        const secondUser = await this.usersRepository.findOne({ where: { id: secondUserId } });
+        const uniqueParticipantIds = participantIds.filter(id => id !== creatorId);
 
-        if (!creator || !secondUser) {
-            throw new NotFoundException('Пользователь не найден');
-        }
+        const participants = await this.usersRepository.findByIds(uniqueParticipantIds);
 
-        const existingChat = await this.chatsRepository.findOne({
-            where: [
-                { creator: { id: creator.id }, secondUser: { id: secondUser.id }, name: chatName },
-                { creator: { id: secondUser.id }, secondUser: { id: creator.id }, name: chatName }
-            ],
-        });
-
-        if (existingChat) {
-            throw new BadRequestException('Чат с таким же именем между этими пользователями уже существует');
+        if (participants.length !== uniqueParticipantIds.length) {
+            throw new NotFoundException('Один или несколько участников не найдены');
         }
 
         const chat = this.chatsRepository.create({
             name: chatName,
-            creator: creator,
-            secondUser: secondUser,
+            participants: [creator, ...participants],
             messages: [],
         });
 
@@ -59,14 +49,16 @@ export class ChatsService {
 
     async deleteChat(userId: number, chatId: number) {
         const chat = await this.chatsRepository.findOne({
-            where: { id: chatId }, relations: ['creator']
+            where: { id: chatId },
+            relations: ['participants'],
         });
 
         if (!chat) {
             throw new NotFoundException('Чат не найден');
         }
 
-        if (chat.creator.id !== userId) {
+        const creator = chat.participants[0];
+        if (creator.id !== userId) {
             throw new ForbiddenException('У вас нет прав на удаление этого чата');
         }
 
@@ -77,11 +69,19 @@ export class ChatsService {
         }
     }
 
-    async renameChat(chatId: number, renameChatDto: RenameChatDto): Promise<Chats> {
-        const chat = await this.chatsRepository.findOne({ where: { id: chatId } });
+    async renameChat(userId: number, chatId: number, renameChatDto: RenameChatDto) {
+        const chat = await this.chatsRepository.findOne({
+            where: { id: chatId },
+            relations: ['participants'],
+        });
 
         if (!chat) {
-            throw new NotFoundException(`Chat with ID ${chatId} not found`);
+            throw new NotFoundException('Чат не найден');
+        }
+
+        const creator = chat.participants[0];
+        if (creator.id !== userId) {
+            throw new ForbiddenException('У вас нет прав на переименование этого чата');
         }
 
         chat.name = renameChatDto.chatName;

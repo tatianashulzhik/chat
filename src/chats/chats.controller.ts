@@ -15,18 +15,17 @@ export class ChatsController {
     @Roles(RoleType.ADMIN)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @UsePipes(new ValidationPipe())
-    @Post('create')
-    async createChat(@Req() req: Request, @Body() createChatDto: CreateChatDto) {
+    @Post('create-group')
+    async createGroupChat(@Req() req: Request, @Body() createChatDto: CreateChatDto) {
         // @ts-ignore
         const creatorId = req.user.id;
-
-        return this.chatsService.createChat(creatorId, createChatDto);
+        return this.chatsService.createGroupChat(creatorId, createChatDto);
     }
 
     @Roles(RoleType.ADMIN)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Delete(':id')
-    async deleteChat(@Req() req: Request, @Param('id') chatId: number) {
+    async deleteChat(@Req() req: Request, @Param('id', ParseIntPipe) chatId: number) {
         // @ts-ignore
         const userId = req.user.id;
         return this.chatsService.deleteChat(userId, chatId);
@@ -37,9 +36,12 @@ export class ChatsController {
     @Patch(':id/rename')
     @UsePipes(new ValidationPipe())
     async renameChat(
+        @Req() req: Request,
         @Param('id', ParseIntPipe) chatId: number,
         @Body() renameChatDto: RenameChatDto,
     ) {
-        return this.chatsService.renameChat(chatId, renameChatDto);
+        // @ts-ignore
+        const userId = req.user.id;
+        return this.chatsService.renameChat(userId, chatId, renameChatDto);
     }
 }

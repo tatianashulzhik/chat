@@ -39,8 +39,14 @@ export class MessagesController {
         return this.messagesService.updateMessage(id, updateMessageDto, userId);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get('chat/:chatId')
-    async getMessagesByChat(@Param('chatId', ParseIntPipe) chatId: number) {
-        return this.messagesService.getMessagesByChat(chatId);
+    async getMessagesByChat(
+        @Req() req: Request,
+        @Param('chatId', ParseIntPipe,
+        ) chatId: number) {
+        // @ts-ignore
+        const userId = req.user.id;
+        return this.messagesService.getMessagesByChat(chatId, userId);
     }
 }

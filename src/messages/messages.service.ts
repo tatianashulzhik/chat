@@ -20,35 +20,38 @@ export class MessagesService {
 
     async createMessage(userId: number, chatId: number, createMessageDto: CreateMessageDto) {
         const existingChat = await this.chatsRepository.findOne({
-            where: [
-                { creator: { id: userId }, id: chatId },
-                { secondUser: { id: userId }, id: chatId }
-            ],
+            where: { id: chatId },
+            relations: ['participants'],
         });
 
-        if (existingChat) {
-            const { content } = createMessageDto;
-
-            const user = await this.usersRepository.findOne({ where: { id: userId } });
-            const chat = await this.chatsRepository.findOne({ where: { id: chatId } });
-
-            if (!user || !chat) {
-                throw new NotFoundException('User or chat not found');
-            }
-
-            const newMessage = this.messagesRepository.create({
-                content,
-                user,
-                chat,
-            });
-
-            return this.messagesRepository.save(newMessage);
-        }
-        return {
-            message: 'Сhat not found for this user'
+        if (!existingChat) {
+            throw new NotFoundException('Chat not found');
         }
 
+        const isParticipant = existingChat.participants.some(participant => participant.id === userId);
+
+        if (!isParticipant) {
+            throw new ForbiddenException('You are not a participant in this chat');
+        }
+
+        const { content } = createMessageDto;
+
+        const user = await this.usersRepository.findOne({ where: { id: userId } });
+
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        const newMessage = this.messagesRepository.create({
+            content,
+            user,
+            chat: existingChat,
+        });
+
+
+        return await this.messagesRepository.save(newMessage);
     }
+
 
     async deleteMessage(id: number, userId: number): Promise<void> {
         const message = await this.messagesRepository.findOne({ where: { id }, relations: ['user'] });
@@ -77,10 +80,26 @@ export class MessagesService {
         return this.messagesRepository.save(message);
     }
 
-    async getMessagesByChat(chatId: number): Promise<Messages[]> {
+    async getMessagesByChat(chatId: number, userId: number): Promise<Messages[]> {
+        const chat = await this.chatsRepository.findOne({
+            where: { id: chatId },
+            relations: ['participants'],
+        });
+
+        if (!chat) {
+            throw new NotFoundException('Чат не найден');
+        }
+
+        const isParticipant = chat.participants.some(participant => participant.id === userId);
+
+        if (!isParticipant) {
+            throw new ForbiddenException('Вы не являетесь участником этого чата');
+        }
+
         return this.messagesRepository.find({
             where: { chat: { id: chatId } },
             relations: ['user', 'chat'],
         });
     }
+
 }

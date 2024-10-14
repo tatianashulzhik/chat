@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { Messages } from '../messages/messages.entity';
 import { Users } from '../users/users.entity';
 
@@ -10,11 +10,9 @@ export class Chats {
     @Column()
     name: string;
 
-    @ManyToOne(() => Users, (user) => user.createdChats)
-    creator: Users;
-
-    @ManyToOne(() => Users, (user) => user.participatingChats)
-    secondUser: Users;
+    @ManyToMany(() => Users, (user) => user.participatingChats)
+    @JoinTable()
+    participants: Users[];
 
     @OneToMany(() => Messages, (message) => message.chat)
     messages: Messages[];
