@@ -102,4 +102,38 @@ export class MessagesService {
         });
     }
 
+    async markMessageAsRead(messageId: number, userId: number): Promise<Messages> {
+        const message = await this.messagesRepository.findOne({
+            where: { id: messageId },
+            relations: ['chat', 'chat.participants', 'user', 'readers'],
+        });
+
+        if (!message) {
+            throw new NotFoundException(`Message with ID ${messageId} not found`);
+        }
+
+        const user = await this.usersRepository.findOne({
+            where: { id: userId },
+            relations: ['readMessages'],
+        });
+
+        if (!user) {
+            throw new NotFoundException(`User with ID ${userId} not found`);
+        }
+
+        const isParticipant = message.chat.participants.some(participant => participant.id === userId);
+        if (!isParticipant) {
+            throw new ForbiddenException('Вы не являетесь участником этого чата');
+        }
+
+        if (message.user.id === userId) {
+            throw new ForbiddenException('Вы не можете пометить свое сообщение как прочитанное');
+        }
+
+        if (!message.readers.some(reader => reader.id === userId)) {
+            message.readers.push(user);
+        }
+
+        return this.messagesRepository.save(message);
+    }
 }

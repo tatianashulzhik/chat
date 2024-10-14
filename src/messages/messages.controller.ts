@@ -49,4 +49,15 @@ export class MessagesController {
         const userId = req.user.id;
         return this.messagesService.getMessagesByChat(chatId, userId);
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch(':id/read')
+    async markMessageAsRead(
+        @Req() req: Request,
+        @Param('id', ParseIntPipe) id: number
+    ) {
+        // @ts-ignore
+        const userId = req.user.id;
+        return this.messagesService.markMessageAsRead(id, userId);
+    }
 }

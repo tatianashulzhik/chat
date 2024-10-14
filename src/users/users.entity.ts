@@ -28,4 +28,7 @@ export class Users {
 
     @ManyToOne(() => Roles, { eager: true })
     role: Roles;
+
+    @ManyToMany(() => Messages, (message) => message.readers)
+    readMessages: Messages[];
 }
