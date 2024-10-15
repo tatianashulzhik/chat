@@ -1,13 +1,15 @@
-import { config } from "dotenv"
-config()
+import { config } from 'dotenv';
+config();
 
-const CONNECTION = {
+export const JWT = {
+    secret: process.env.JWT_SECRET,
+};
+
+export const CONNECTION = {
     type: process.env.DATABASE_CONNECTION,
     host: process.env.DATABASE_HOST,
-    port: process.env.DATABASE_PORT,
+    port: parseInt(process.env.DATABASE_PORT, 10),
     username: process.env.DATABASE_USERNAME,
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_NAME,
-}
-
-export default CONNECTION
+};

@@ -1,4 +1,4 @@
-import CONNECTION from "./db.connection";
+import { CONNECTION } from "./config";
 import { DataSource } from "typeorm";
 
 //@ts-ignore

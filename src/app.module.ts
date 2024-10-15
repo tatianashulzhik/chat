@@ -4,9 +4,9 @@ import { UsersModule } from './users/users.module';
 import { MessagesModule } from './messages/messages.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RolesModule } from './roles/roles.module';
-import CONNECTION from 'src/db.connection';
-import { AppWebSocketGateway } from './websocket.gateway';
+import { CONNECTION } from 'src/config';
 import { AuthService } from 'src/auth/auth.service';
+import { AppWebSocketGateway } from './gateway/websocket.gateway';
 
 
 @Module({
