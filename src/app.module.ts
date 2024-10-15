@@ -7,6 +7,7 @@ import { RolesModule } from './roles/roles.module';
 import { CONNECTION } from 'src/config';
 import { AuthService } from 'src/auth/auth.service';
 import { AppWebSocketGateway } from './gateway/websocket.gateway';
+import { NotificationsModule } from './notifications/notifications.module';
 
 
 @Module({
@@ -17,7 +18,7 @@ import { AppWebSocketGateway } from './gateway/websocket.gateway';
       synchronize: false,
       autoLoadEntities: true,
     }),
-    ChatsModule, UsersModule, MessagesModule, RolesModule],
+    ChatsModule, UsersModule, MessagesModule, RolesModule, NotificationsModule],
   controllers: [],
   providers: [AppWebSocketGateway, AuthService],
 })
