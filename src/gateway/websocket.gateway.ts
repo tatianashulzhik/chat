@@ -13,7 +13,6 @@ export class AppWebSocketGateway implements OnGatewayConnection, OnGatewayDiscon
 
     async handleConnection(client: Socket) {
         const { authorization } = client.handshake.headers;
-        console.log(authorization)
         if (!authorization || !authorization.startsWith('Bearer ')) {
             client.disconnect();
             client.emit('error', 'JWT token not found or invalid in headers');
@@ -24,8 +23,6 @@ export class AppWebSocketGateway implements OnGatewayConnection, OnGatewayDiscon
 
         try {
             await this.authService.validateToken(token);
-            console.log('Token is valid:', token);
-
             client.emit('tokenValidation', { status: 'success', token });
         } catch {
             client.disconnect();

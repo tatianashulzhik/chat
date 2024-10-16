@@ -3,6 +3,7 @@ import { Messages } from '../messages/messages.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToOne, ManyToMany } from 'typeorm';
 import { Chats } from '../chats/chats.entity';
 import { Notifications } from '../notifications/notifications.entity';
+import { Posts } from '../posts/posts.entity';
 
 @Entity()
 export class Users {
@@ -35,4 +36,7 @@ export class Users {
 
     @OneToMany(() => Notifications, notification => notification.user)
     notifications: Notification[];
+
+    @ManyToMany(() => Posts, (post) => post.authors)
+    posts: Posts[];
 }

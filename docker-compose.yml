@@ -26,8 +26,24 @@ services:
     networks:
       - chat
 
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    ports:
+      - ${MINIO_PORT}:${MINIO_PORT}
+      - ${MINIO_PORT_CONSOLE}:${MINIO_PORT_CONSOLE}
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESSKEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRETKEY}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - chat
+
 volumes:
   postgres:
+  minio_data:
 
 networks:
   chat:

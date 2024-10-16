@@ -8,7 +8,6 @@ export class AuthService {
 
     async validateToken(token: string): Promise<any> {
         try {
-            console.log(this.JWT_SECRET)
             const decoded = jwt.verify(token, this.JWT_SECRET);
             return decoded;
         } catch (err) {

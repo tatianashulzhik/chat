@@ -8,6 +8,10 @@ import { CONNECTION } from 'src/config';
 import { AuthService } from 'src/auth/auth.service';
 import { AppWebSocketGateway } from './gateway/websocket.gateway';
 import { NotificationsModule } from './notifications/notifications.module';
+import { PostsModule } from './posts/posts.module';
+import { ConfigModule } from '@nestjs/config';
+import { MinioClientModule } from './minio-client/minio-client.module';
+import { MediaModule } from './media/media.module';
 
 
 @Module({
@@ -18,7 +22,8 @@ import { NotificationsModule } from './notifications/notifications.module';
       synchronize: false,
       autoLoadEntities: true,
     }),
-    ChatsModule, UsersModule, MessagesModule, RolesModule, NotificationsModule],
+    ConfigModule.forRoot({ isGlobal: true }),
+    ChatsModule, UsersModule, MessagesModule, RolesModule, NotificationsModule, PostsModule, MinioClientModule, MediaModule],
   controllers: [],
   providers: [AppWebSocketGateway, AuthService],
 })

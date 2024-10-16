@@ -12,10 +12,12 @@ import { ConfigService } from '@nestjs/config';
 import { Roles } from '../roles/roles.entity';
 import { RolesGuard } from '../guards/roles.guard';
 import { Notifications } from '../notifications/notifications.entity';
+import { Posts } from '../posts/posts.entity';
+import { Media } from '../media/media.entity';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Users, Messages, Roles, Notifications]),
+        TypeOrmModule.forFeature([Users, Messages, Roles, Notifications, Posts, Media]),
         PassportModule.register({ defaultStrategy: 'jwt' }),
         JwtModule.register({
             secret: 'secret',
