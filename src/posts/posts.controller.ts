@@ -30,25 +30,33 @@ export class PostsController {
     @UseGuards(JwtAuthGuard)
     @UsePipes(new ValidationPipe())
     @Patch(':id')
-    update(@Param('id') id: number, @Body() updatePostDto: UpdatePostDto) {
-        return this.postsService.update(id, updatePostDto);
+    update(@Param('id') id: number, @Body() updatePostDto: UpdatePostDto, @Req() req: Request) {
+        //@ts-ignore
+        const userId = req.user.id;
+        return this.postsService.update(id, updatePostDto, userId);
     }
 
     @UseGuards(JwtAuthGuard)
     @Delete(':id')
-    remove(@Param('id') id: number) {
-        return this.postsService.remove(id);
+    remove(@Param('id') id: number, @Req() req: Request) {
+        //@ts-ignore
+        const userId = req.user.id;
+        return this.postsService.remove(id, userId);
     }
 
     @UseGuards(JwtAuthGuard)
     @Patch(':id/published')
-    updateStatusPublished(@Param('id') id: number) {
-        return this.postsService.updateStatusPublished(id);
+    updateStatusPublished(@Param('id') id: number, @Req() req: Request) {
+        //@ts-ignore
+        const userId = req.user.id;
+        return this.postsService.updateStatusPublished(id, userId);
     }
 
     @UseGuards(JwtAuthGuard)
     @Patch(':id/archived')
-    updateStatusArchived(@Param('id') id: number) {
-        return this.postsService.updateStatusArchived(id);
+    updateStatusArchived(@Param('id') id: number, @Req() req: Request) {
+        //@ts-ignore
+        const userId = req.user.id;
+        return this.postsService.updateStatusArchived(id, userId);
     }
 }

@@ -4,6 +4,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, Up
 import { Chats } from '../chats/chats.entity';
 import { Notifications } from '../notifications/notifications.entity';
 import { Posts } from '../posts/posts.entity';
+import { Articles } from '../articles/articles.entity';
 
 @Entity()
 export class Users {
@@ -39,4 +40,7 @@ export class Users {
 
     @ManyToMany(() => Posts, (post) => post.authors)
     posts: Posts[];
+
+    @ManyToMany(() => Articles, (post) => post.authors)
+    articles: Articles[];
 }

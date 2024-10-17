@@ -1,15 +1,18 @@
 import { Module } from '@nestjs/common';
 import { MediaService } from './media.service';
 import { MediaController } from './media.controller';
-import { MinioClientModule } from 'src/minio-client/minio-client.module';
+import { MinioClientModule } from '../minio-client/minio-client.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Media } from './media.entity';
-import { Posts } from 'src/posts/posts.entity';
+import { PostsModule } from '../posts/posts.module';
+import { ArticlesModule } from '../articles/articles.module';
 
 @Module({
   imports: [
     MinioClientModule,
-    TypeOrmModule.forFeature([Media, Posts]),
+    TypeOrmModule.forFeature([Media]),
+    PostsModule,
+    ArticlesModule
   ],
   providers: [MediaService],
   controllers: [MediaController]

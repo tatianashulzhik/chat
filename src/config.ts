@@ -22,3 +22,9 @@ export const MINIO_CONFIG = {
     MINIO_BUCKET: process.env.MINIO_BUCKET,
     MINIO_PORT_CONSOLE: process.env.MINIO_PORT_CONSOLE,
 }
+
+export enum PublicationStatus {
+    DRAFT = 'draft',
+    PUBLISHED = 'published',
+    ARCHIVED = 'archived'
+}

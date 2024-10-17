@@ -87,4 +87,8 @@ export class UsersService {
             relations: ['role'],
         });
     }
+
+    async findOne(id: number): Promise<Users> {
+        return await this.usersRepository.findOne({ where: { id } });
+    }
 }

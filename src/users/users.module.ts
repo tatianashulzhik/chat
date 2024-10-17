@@ -3,21 +3,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from './users.entity';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { Messages } from '../messages/messages.entity';
-import { Chats } from '../chats/chats.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from '../strategy/jwt.strategy';
-import { ConfigService } from '@nestjs/config';
 import { Roles } from '../roles/roles.entity';
 import { RolesGuard } from '../guards/roles.guard';
-import { Notifications } from '../notifications/notifications.entity';
-import { Posts } from '../posts/posts.entity';
-import { Media } from '../media/media.entity';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Users, Messages, Roles, Notifications, Posts, Media]),
+        TypeOrmModule.forFeature([Users, Roles]),
         PassportModule.register({ defaultStrategy: 'jwt' }),
         JwtModule.register({
             secret: 'secret',
@@ -25,7 +18,7 @@ import { Media } from '../media/media.entity';
         }),
     ],
     controllers: [UsersController],
-    providers: [UsersService, JwtStrategy, ConfigService, RolesGuard],
+    providers: [UsersService, RolesGuard],
     exports: [UsersService],
 })
 

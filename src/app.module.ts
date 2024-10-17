@@ -13,6 +13,8 @@ import { ConfigModule } from '@nestjs/config';
 import { MinioClientModule } from './minio-client/minio-client.module';
 import { MediaModule } from './media/media.module';
 import { QuestionModule } from './questions/questions.module';
+import { ArticlesModule } from './articles/articles.module';
+import { JwtStrategy } from './strategy/jwt.strategy';
 
 @Module({
   imports: [
@@ -32,8 +34,9 @@ import { QuestionModule } from './questions/questions.module';
     MinioClientModule,
     MediaModule,
     QuestionModule,
+    ArticlesModule,
   ],
   controllers: [],
-  providers: [AppWebSocketGateway, AuthService],
+  providers: [AppWebSocketGateway, AuthService, JwtStrategy],
 })
 export class AppModule { }

@@ -4,7 +4,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTabl
 import { PublicationStatus } from '../config';
 
 @Entity()
-export class Posts {
+export class Articles {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -26,6 +26,12 @@ export class Posts {
         default: PublicationStatus.DRAFT,
     })
     status: PublicationStatus;
+
+    @Column('text', { nullable: true })
+    link?: string;
+
+    @Column('text', { nullable: true })
+    author?: string;
 
     @OneToMany(() => Media, (media) => media.post)
     media: Media[];

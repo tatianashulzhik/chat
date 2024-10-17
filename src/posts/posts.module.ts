@@ -3,12 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Posts } from './posts.entity';
 import { PostsService } from './posts.service';
 import { PostsController } from './posts.controller';
-import { Users } from '../users/users.entity';
-import { MinioClientModule } from '../minio-client/minio-client.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Posts, Users, MinioClientModule]),
+        TypeOrmModule.forFeature([Posts]),
+        UsersModule
     ],
     controllers: [PostsController],
     providers: [PostsService],

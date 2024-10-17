@@ -4,19 +4,19 @@ import { Messages } from './messages.entity';
 import { MessagesController } from './messages.controller';
 import { MessagesService } from './messages.service';
 import { JwtStrategy } from '../strategy/jwt.strategy';
-import { ConfigService } from '@nestjs/config';
-import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { Users } from '../users/users.entity';
 import { Chats } from '../chats/chats.entity';
 import { Roles } from '../roles/roles.entity';
+import { UsersModule } from '../users/users.module';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Messages, Users, Chats, Roles]),
+        UsersModule
     ],
     controllers: [MessagesController],
-    providers: [MessagesService, JwtStrategy, ConfigService, UsersService, JwtService],
+    providers: [MessagesService, JwtService],
     exports: [MessagesService],
 })
 export class MessagesModule { }

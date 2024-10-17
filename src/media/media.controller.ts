@@ -11,20 +11,46 @@ export class MediaController {
     ) { }
 
     @UseGuards(JwtAuthGuard)
-    @Post(':postId/single')
+    @Post('post/:postId/single')
     @UseInterceptors(FileInterceptor('image'))
-    async uploadSingle(
+    async uploadSinglePosts(
         @UploadedFile() image: BufferedFile,
         @Param('postId', ParseIntPipe) postId: number
     ) {
-        return await this.mediaService.uploadSingle(image, postId)
+        return await this.mediaService.uploadSinglePosts(image, postId)
     }
 
     @UseGuards(JwtAuthGuard)
-    @Delete(':fileName')
-    async deleteFile(@Param('fileName') fileName: string) {
+    @Delete('posts/:fileName')
+    async deleteFilePosts(@Param('fileName') fileName: string) {
         try {
-            await this.mediaService.deleteFile(fileName);
+            await this.mediaService.deleteFilePosts(fileName);
+            return {
+                message: 'File deleted successfully',
+            };
+        } catch (error) {
+            throw new HttpException(
+                error.message || 'Error deleting file',
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('articles/:postId/single')
+    @UseInterceptors(FileInterceptor('image'))
+    async uploadSingleArticles(
+        @UploadedFile() image: BufferedFile,
+        @Param('postId', ParseIntPipe) postId: number
+    ) {
+        return await this.mediaService.uploadSingleArticles(image, postId)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete('articles/:fileName')
+    async deleteFileArticles(@Param('fileName') fileName: string) {
+        try {
+            await this.mediaService.deleteFileArticles(fileName);
             return {
                 message: 'File deleted successfully',
             };

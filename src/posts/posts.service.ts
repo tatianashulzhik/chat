@@ -1,18 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Posts, PublicationStatus } from './posts.entity';
-import { Users } from '../users/users.entity';
+import { Posts } from './posts.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { PublicationStatus } from '../config';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class PostsService {
     constructor(
         @InjectRepository(Posts)
         private postsRepository: Repository<Posts>,
-        @InjectRepository(Users)
-        private usersRepository: Repository<Users>,
+        private readonly usersService: UsersService,
     ) { }
 
     async findAll(): Promise<Posts[]> {
@@ -33,7 +33,7 @@ export class PostsService {
     }
 
     async create(createPostDto: CreatePostDto, authorId: number): Promise<Posts[]> {
-        const author = await this.usersRepository.findOne({ where: { id: authorId } });
+        const author = this.usersService.findOne(authorId)
 
         if (!author) {
             throw new NotFoundException('Author not found');
@@ -47,28 +47,57 @@ export class PostsService {
         return await this.postsRepository.save(newPost);
     }
 
-    async update(id: number, updatePostDto: UpdatePostDto): Promise<Posts> {
+    async update(id: number, updatePostDto: UpdatePostDto, userId: number): Promise<Posts> {
         const post = await this.findOne(id);
+
+        const isAuthor = post.authors.some(author => author.id === userId);
+
+        if (!isAuthor) {
+            throw new ForbiddenException('You cannot update this post because you did not write it.');
+        }
 
         Object.assign(post, updatePostDto);
 
         return await this.postsRepository.save(post);
     }
 
-    async remove(id: number): Promise<void> {
+    async remove(id: number, userId: number): Promise<void> {
         const post = await this.findOne(id);
+
+        const isAuthor = post.authors.some(author => author.id === userId);
+
+        if (!isAuthor) {
+            throw new ForbiddenException('You cannot update this post because you did not write it.');
+        }
+
         await this.postsRepository.remove(post);
     }
 
-    async updateStatusPublished(id: number): Promise<Posts> {
+    async updateStatusPublished(id: number, userId: number): Promise<Posts> {
         const post = await this.findOne(id)
+
+        const isAuthor = post.authors.some(author => author.id === userId);
+
+        if (!isAuthor) {
+            throw new ForbiddenException('You cannot update this post because you did not write it.');
+        }
+
         Object.assign(post, { status: PublicationStatus.PUBLISHED })
+
         return await this.postsRepository.save(post)
     }
 
-    async updateStatusArchived(id: number): Promise<Posts> {
+    async updateStatusArchived(id: number, userId: number): Promise<Posts> {
         const post = await this.findOne(id)
+
+        const isAuthor = post.authors.some(author => author.id === userId);
+
+        if (!isAuthor) {
+            throw new ForbiddenException('You cannot update this post because you did not write it.');
+        }
+
         Object.assign(post, { status: PublicationStatus.ARCHIVED })
+
         return await this.postsRepository.save(post)
     }
 }
