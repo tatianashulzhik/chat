@@ -12,7 +12,7 @@ import { PostsModule } from './posts/posts.module';
 import { ConfigModule } from '@nestjs/config';
 import { MinioClientModule } from './minio-client/minio-client.module';
 import { MediaModule } from './media/media.module';
-
+import { QuestionModule } from './questions/questions.module';
 
 @Module({
   imports: [
@@ -23,9 +23,17 @@ import { MediaModule } from './media/media.module';
       autoLoadEntities: true,
     }),
     ConfigModule.forRoot({ isGlobal: true }),
-    ChatsModule, UsersModule, MessagesModule, RolesModule, NotificationsModule, PostsModule, MinioClientModule, MediaModule],
+    ChatsModule,
+    UsersModule,
+    MessagesModule,
+    RolesModule,
+    NotificationsModule,
+    PostsModule,
+    MinioClientModule,
+    MediaModule,
+    QuestionModule,
+  ],
   controllers: [],
   providers: [AppWebSocketGateway, AuthService],
 })
-
 export class AppModule { }
